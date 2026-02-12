@@ -4,6 +4,7 @@ import './App.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import PokemonList from './PokemonList';
+import Footer from './Footer';
 
 const queryClient = new QueryClient();
 
@@ -12,6 +13,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Content />
       <PokemonList />
+      <Footer />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
