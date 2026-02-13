@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import './Header.css';
+import './css/Header.css';
 import graphqlPokemonLogo from '/graphql-pokemon.png'
 
 function Header() {

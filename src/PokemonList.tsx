@@ -2,7 +2,7 @@ import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { getAllPokemon, type GetAllPokemonResponse } from "./graphql/getAllPokemon";
 import request from "graphql-request";
 import Pokemon from "./Pokemon";
-import './Pokemon.css'
+import './css/Pokemon.css'
 import FetchNextPageSentinel from "./FetchNextPageSentinel";
 
 const PAGE_SIZE = 10;

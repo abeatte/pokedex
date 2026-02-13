@@ -1,6 +1,6 @@
 import { FaPlay } from "react-icons/fa";
 import type { Pokemon } from "./graphql/getAllPokemon";
-import './Pokemon.css'
+import './css/Pokemon.css'
 import { useState } from "react";
 
 function pokemon(props: { pokemon: Pokemon }) {
