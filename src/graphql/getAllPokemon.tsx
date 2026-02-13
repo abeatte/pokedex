@@ -86,23 +86,13 @@ export interface GetAllPokemonResponse {
   ]
 }
 
-export const getAllPokemon = gql`
-query (
-  $offset: Int
-  $take: Int
-  $reverse: Boolean
-  $offsetFlavorTexts: Int
-  $takeFlavorTexts: Int
-  $reverseFlavorTexts: Boolean
-) {
-  getAllPokemon(
-    offset: $offset
-    take: $take
-    reverse: $reverse
-    offsetFlavorTexts: $offsetFlavorTexts
-    takeFlavorTexts: $takeFlavorTexts
-    reverseFlavorTexts: $reverseFlavorTexts
-  ) {
+export interface GetFuzzyPokemonResponse {
+  "getFuzzyPokemon": [
+    Pokemon
+  ]
+}
+
+const pokemon = `{
     key
     backSprite
     baseForme
@@ -238,5 +228,44 @@ query (
     mythical
     legendary
   }
-}
+}`;
+
+export const getAllPokemon = gql`
+query (
+  $offset: Int
+  $take: Int
+  $reverse: Boolean
+  $offsetFlavorTexts: Int
+  $takeFlavorTexts: Int
+  $reverseFlavorTexts: Boolean
+) {
+  getAllPokemon(
+    offset: $offset
+    take: $take
+    reverse: $reverse
+    offsetFlavorTexts: $offsetFlavorTexts
+    takeFlavorTexts: $takeFlavorTexts
+    reverseFlavorTexts: $reverseFlavorTexts
+  ) ${pokemon}
+`
+
+export const getFuzzyPokemon = gql`
+query (
+  $offset: Int
+  $take: Int
+  $reverse: Boolean
+  $pokemon: String!
+  $offsetFlavorTexts: Int
+  $takeFlavorTexts: Int
+  $reverseFlavorTexts: Boolean
+) {
+  getFuzzyPokemon(
+    offset: $offset
+    take: $take
+    pokemon: $pokemon
+    reverse: $reverse
+    offsetFlavorTexts: $offsetFlavorTexts
+    takeFlavorTexts: $takeFlavorTexts
+    reverseFlavorTexts: $reverseFlavorTexts
+  ) ${pokemon}
 `

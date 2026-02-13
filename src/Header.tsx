@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './css/Header.css';
 import graphqlPokemonLogo from '/graphql-pokemon.png'
+import { useHeaderInfo } from './HeaderInfoContext';
 
 function Header() {
     const [isExpanded, setIsExpanded] = useState(false);
+    const { searchQuery, setSearchQuery } = useHeaderInfo();
+
+    const handleSearch = (element: ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
+        setSearchQuery(element.target.value);
+    }
 
     return (
         <header className={`header ${isExpanded ? 'expanded' : ''}`}>
@@ -27,16 +33,16 @@ function Header() {
                 <div className="header-controls">
                     <div className="control-group">
                         <label htmlFor="search">Search:</label>
-                        <input type="text" id="search" placeholder="Search Pokémon..." />
+                        <input type="text" id="search" placeholder="Search Pokémon..." value={searchQuery} onChange={handleSearch} />
                     </div>
-                    <div className="control-group">
+                    {/* <div className="control-group">
                         <label htmlFor="sort">Sort by:</label>
                         <select id="sort">
                             <option value="number">Number</option>
                             <option value="name">Name</option>
                             <option value="type">Type</option>
                         </select>
-                    </div>
+                    </div> */}
                 </div>
             )}
         </header>
