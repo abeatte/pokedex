@@ -1,4 +1,4 @@
-import { getAllPokemon, getFuzzyPokemon, type GetAllPokemonResponse, type GetFuzzyPokemonResponse } from "./graphql/getAllPokemon";
+import { getAllPokemon, getFuzzyPokemon, type GetAllPokemonResponse, type GetFuzzyPokemonResponse } from "./graphql/getPokemon";
 import Pokemon from "./Pokemon";
 import './css/Pokemon.css'
 import FetchNextPageSentinel from "./FetchNextPageSentinel";

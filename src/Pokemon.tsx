@@ -1,5 +1,5 @@
 import { FaPlay } from "react-icons/fa";
-import type { Pokemon } from "./graphql/getAllPokemon";
+import type { Pokemon } from "./graphql/getPokemon";
 import './css/Pokemon.css'
 import { useState } from "react";
 
