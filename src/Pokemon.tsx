@@ -121,8 +121,7 @@ function pokemon(props: { pokemon: Pokemon }) {
                                                 className={`image ${displayIndex == idx ? 'front' : nextDisplayIndex == idx ? 'back' : 'gone'}`}
                                                 src={getSpriteSrcByIndex(idx)}
                                                 onError={handleError}
-                                                onTransitionEnd={(e) => {
-                                                    console.log(idx, e.target, displayIndex, nextDisplayIndex, isImageAnimating)
+                                                onTransitionEnd={_ => {
                                                     if (displayIndex == idx && isImageAnimating) {
                                                         setIsImageAnimating(false);
 
