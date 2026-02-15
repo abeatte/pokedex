@@ -1,4 +1,4 @@
-# pokemon
+# Pokédex
 
 This project explores the Pokémon API using a TanStack Query based client.
 

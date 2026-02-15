@@ -1,5 +1,5 @@
 {
-  "name": "pokemon",
+  "name": "pokedex",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/abeatte/pokemon/issues"
   },
-  "homepage": "https://github.com/abeatte/pokemon#readme",
+  "homepage": "https://github.com/abeatte/pokedex#readme",
   "scripts": {
     "clean": "rm -r node_modeules",
     "dev": "vite",
