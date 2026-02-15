@@ -74,7 +74,8 @@ function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: nu
         setIsImageAnimating(true);
     };
 
-    const playCry = () => {
+    const playCry: MouseEventHandler<HTMLButtonElement> = (event) => {
+        event.stopPropagation();
         new Audio(cry)
             .play()
             .catch(error => console.error(`Audio playback failed for ${species}'s cry:`, error));
@@ -90,7 +91,8 @@ function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: nu
         setImageError(true);
     }
 
-    const handleCardClick = () => {
+    const handleCardClick: MouseEventHandler<HTMLDivElement> = (event) => {
+        event.stopPropagation()
         router.navigate({
             to: '/pokemon/$species',
             params: { species },
@@ -118,10 +120,10 @@ function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: nu
                 <div className="card back"></div>
                 <div className="card front" onClick={handleCardClick}>
                     <div className="name">{species}</div>
-                    <div className="image_window">
+                    <div className="image_window" onClick={handleSpriteClick} >
                         <span
                             className={`pokemon_image_container ${isImageAnimating ? 'animating' : ''}`}>
-                            <div className="image_flipper" onClick={handleSpriteClick} >
+                            <div className="image_flipper" >
                                 {
                                     [...Array(spriteCount).keys()].map((idx) => {
                                         const nextDisplayIndex = (displayIndex + 1) % spriteCount;
@@ -134,7 +136,6 @@ function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: nu
                                                 onTransitionEnd={_ => {
                                                     if (displayIndex == idx && isImageAnimating) {
                                                         setIsImageAnimating(false);
-
                                                         setDisplayIndex(nextDisplayIndex);
                                                     }
                                                 }}
