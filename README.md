@@ -10,3 +10,4 @@ This project explores the Pokémon API using a TanStack Query based client.
 - **Build Tool**: [Vite](https://vite.dev/)
 - **Data Fetching**: [TanStack Query (React Query)](https://tanstack.com/query/latest/docs/framework/react/overview), [GraphQl](https://the-guild.dev/graphql/codegen/docs/getting-started), [graphql_request](https://www.npmjs.com/package/graphql-request)
 - **Typescript Schema Validation: [Zod](https://zod.dev/)
+- **Routing**: [Tanstack Router](https://tanstack.com/router/latest/docs/framework/react/quick-start)

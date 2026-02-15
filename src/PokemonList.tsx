@@ -110,7 +110,7 @@ function PokemonList() {
 
   return (
     <div className="pokemon-list-container">
-      <div className="grid">
+      <div className="pokemon-list-grid">
         {pokemen}
         <FetchNextPageSentinel key={'fetchNextPageSentinel'} fetchParams={queryResponse} />
       </div>

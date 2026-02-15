@@ -15,6 +15,11 @@ const Evolution = z.object({
   species: z.string(),
 });
 
+const FlavorText = z.object({
+  flavor: z.string(), // "Some of its notable features match those of an object named within a certain expedition journal as Iron Thorns.",
+  game: z.string(), // "Violet"
+});
+
 export const Pokemon = z.object({
   key: z.string(),
   backSprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-back/ironthorns.png",
@@ -37,11 +42,11 @@ export const Pokemon = z.object({
   color: z.string(), // "Green",
   // cosmeticFormes: null,
   cry: z.url(), // "https://play.pokemonshowdown.com/audio/cries/ironthorns.mp3",
-  eggGroups: [
+  eggGroups: z.array(
     z.string() // Undiscovered
-  ],
+  ),
   // evolutionLevel: null,
-  evolutions: [Evolution],
+  evolutions: z.array(Evolution),
   evYields: {
     attack: z.number(), // 3,
     defense: z.number(), // 0,
@@ -50,12 +55,7 @@ export const Pokemon = z.object({
     specialdefense: z.number(), // 0,
     speed: z.number(), // 0
   },
-  flavorTexts: [
-    {
-      flavor: z.string(), // "Some of its notable features match those of an object named within a certain expedition journal as Iron Thorns.",
-      game: z.string(), // "Violet"
-    }
-  ],
+  flavorTexts: z.array(FlavorText),
   // forme: null,
   // formeLetter: null,
   gender: {
@@ -69,7 +69,7 @@ export const Pokemon = z.object({
   minimumHatchTime: z.number(), // 12850,
   num: z.number(), // 995,
   // otherFormes: null,
-  preevolutions: [Evolution],
+  preevolutions: z.array(Evolution),
   serebiiPage: z.url(), // "https://www.serebii.net/pokedex-sv/ironthorns",
   shinyBackSprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-back-shiny/ironthorns.png",
   shinySprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-shiny/ironthorns.png",
@@ -211,9 +211,9 @@ query (
   ) ${pokemon}
 `
 
-export const getPokemon = gql`
-query (
-  $pokemon: String!
+export const getSinglePokemon = gql`
+query GetPokemon(
+  $pokemon: PokemonEnum!
 ) {
   pokemon: getPokemon(
     pokemon: $pokemon

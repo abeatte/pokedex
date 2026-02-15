@@ -1,10 +1,10 @@
 import { FaPlay } from "react-icons/fa";
 import type { Pokemon } from "./graphql/getPokemon";
 import './css/Pokemon.css'
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type MouseEventHandler } from "react";
+import { useRouter } from "@tanstack/react-router";
 
-function pokemon(props: { pokemon: Pokemon }) {
-    const { pokemon } = props;
+function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: number }) {
     const {
         species,
         sprite, backSprite,
@@ -24,6 +24,7 @@ function pokemon(props: { pokemon: Pokemon }) {
     const [isAnimating, setIsAnimating] = useState(false);
     const [isImageAnimating, setIsImageAnimating] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
     const hasBothSprites = sprite && backSprite;
     const hasShinySprites = shinySprite && shinyBackSprite;
@@ -66,7 +67,8 @@ function pokemon(props: { pokemon: Pokemon }) {
         }
     };
 
-    const handleSpriteClick = () => {
+    const handleSpriteClick: MouseEventHandler<HTMLDivElement> = (event) => {
+        event.stopPropagation();
         if (!hasBothSprites) return;
 
         setIsImageAnimating(true);
@@ -88,6 +90,13 @@ function pokemon(props: { pokemon: Pokemon }) {
         setImageError(true);
     }
 
+    const handleCardClick = () => {
+        router.navigate({
+            to: '/pokemon/$species',
+            params: { species },
+        });
+    }
+
     if (imageError) {
         // This works with ErrorBoundary to catch and remove this Card when images fail to load
         throw new Error(`Unable to load Pokemon image for ${species}`);
@@ -98,6 +107,7 @@ function pokemon(props: { pokemon: Pokemon }) {
     return (
         <div
             ref={cardRef}
+            style={{'paddingTop': (96 * generation) + 'px'}}
             className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''}`}
             onTransitionEnd={() => {
                 setIsAnimating(false);
@@ -106,7 +116,7 @@ function pokemon(props: { pokemon: Pokemon }) {
         >
             <div className="card_flipper">
                 <div className="card back"></div>
-                <div className="card front">
+                <div className="card front" onClick={handleCardClick}>
                     <div className="name">{species}</div>
                     <div className="image_window">
                         <span
@@ -116,7 +126,7 @@ function pokemon(props: { pokemon: Pokemon }) {
                                     [...Array(spriteCount).keys()].map((idx) => {
                                         const nextDisplayIndex = (displayIndex + 1) % spriteCount;
                                         return (
-                                            <img 
+                                            <img
                                                 key={`sprite-${idx}`}
                                                 className={`image ${displayIndex == idx ? 'front' : nextDisplayIndex == idx ? 'back' : 'gone'}`}
                                                 src={getSpriteSrcByIndex(idx)}
