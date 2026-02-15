@@ -10,6 +10,11 @@ const Type = z.object({
   name: z.string(), // "Rock"
 });
 
+const Evolution = z.object({
+  key: z.string(),
+  species: z.string(),
+});
+
 export const Pokemon = z.object({
   key: z.string(),
   backSprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-back/ironthorns.png",
@@ -36,7 +41,7 @@ export const Pokemon = z.object({
     z.string() // Undiscovered
   ],
   // evolutionLevel: null,
-  // evolutions: null,
+  evolutions: [Evolution],
   evYields: {
     attack: z.number(), // 3,
     defense: z.number(), // 0,
@@ -64,7 +69,7 @@ export const Pokemon = z.object({
   minimumHatchTime: z.number(), // 12850,
   num: z.number(), // 995,
   // otherFormes: null,
-  // preevolutions: null,
+  preevolutions: [Evolution],
   serebiiPage: z.url(), // "https://www.serebii.net/pokedex-sv/ironthorns",
   shinyBackSprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-back-shiny/ironthorns.png",
   shinySprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-shiny/ironthorns.png",
@@ -80,16 +85,14 @@ export const Pokemon = z.object({
 
 export type Pokemon = z.infer<typeof Pokemon>;
 
-export interface GetAllPokemonResponse {
-  "getAllPokemon": [
+export interface GetPokemonResponse {
+  "pokemon": [
     Pokemon
   ]
 }
 
-export interface GetFuzzyPokemonResponse {
-  "getFuzzyPokemon": [
-    Pokemon
-  ]
+export interface GetSinglePokemonResponse {
+  "pokemon": Pokemon
 }
 
 const pokemon = `{
@@ -121,38 +124,7 @@ const pokemon = `{
     evolutionLevel
     evolutions {
       key
-      backSprite
-      baseForme
-      baseSpecies
-      baseStatsTotal
-      bulbapediaPage
-      classification
-      respelling
-      ipa
-      color
-      cosmeticFormes
-      cry
-      eggGroups
-      evolutionLevel
-      forme
-      formeLetter
-      height
-      isEggObtainable
-      levellingRate
-      maximumHatchTime
-      minimumHatchTime
-      num
-      otherFormes
-      serebiiPage
-      shinyBackSprite
-      shinySprite
-      smogonPage
-      smogonTier
       species
-      sprite
-      weight
-      mythical
-      legendary
     }
     evYields {
       attack
@@ -181,38 +153,7 @@ const pokemon = `{
     otherFormes
     preevolutions {
       key
-      backSprite
-      baseForme
-      baseSpecies
-      baseStatsTotal
-      bulbapediaPage
-      classification
-      respelling
-      ipa
-      color
-      cosmeticFormes
-      cry
-      eggGroups
-      evolutionLevel
-      forme
-      formeLetter
-      height
-      isEggObtainable
-      levellingRate
-      maximumHatchTime
-      minimumHatchTime
-      num
-      otherFormes
-      serebiiPage
-      shinyBackSprite
-      shinySprite
-      smogonPage
-      smogonTier
       species
-      sprite
-      weight
-      mythical
-      legendary
     }
     serebiiPage
     shinyBackSprite
@@ -239,7 +180,7 @@ query (
   $takeFlavorTexts: Int
   $reverseFlavorTexts: Boolean
 ) {
-  getAllPokemon(
+  pokemon: getAllPokemon(
     offset: $offset
     take: $take
     reverse: $reverse
@@ -259,7 +200,7 @@ query (
   $takeFlavorTexts: Int
   $reverseFlavorTexts: Boolean
 ) {
-  getFuzzyPokemon(
+  pokemon: getFuzzyPokemon(
     offset: $offset
     take: $take
     pokemon: $pokemon
@@ -267,5 +208,14 @@ query (
     offsetFlavorTexts: $offsetFlavorTexts
     takeFlavorTexts: $takeFlavorTexts
     reverseFlavorTexts: $reverseFlavorTexts
+  ) ${pokemon}
+`
+
+export const getPokemon = gql`
+query (
+  $pokemon: String!
+) {
+  pokemon: getPokemon(
+    pokemon: $pokemon
   ) ${pokemon}
 `

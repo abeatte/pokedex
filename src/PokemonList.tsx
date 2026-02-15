@@ -1,4 +1,4 @@
-import { getAllPokemon, getFuzzyPokemon, type Pokemon as PokemonType, type GetAllPokemonResponse, type GetFuzzyPokemonResponse } from "./graphql/getPokemon";
+import { getAllPokemon, getFuzzyPokemon, type Pokemon as PokemonType, type GetPokemonResponse, type GetSinglePokemonResponse } from "./graphql/getPokemon";
 import Pokemon from "./Pokemon";
 import './css/Pokemon.css'
 import FetchNextPageSentinel from "./FetchNextPageSentinel";
@@ -6,7 +6,7 @@ import ErrorBoundary from "./ErrorBoundary";
 import { Fragment } from "react";
 import request from "graphql-request";
 import { useHeaderInfo } from "./HeaderInfoContext";
-import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 const POKEMON_START_OFFSET = 93;
 const PAGE_SIZE = 10;
@@ -19,10 +19,11 @@ interface PokemonResponse {
 
 function PokemonList() {
   const { searchQuery } = useHeaderInfo();
+  const queryClient = useQueryClient();
 
   const fetchAllPokemon = async ({ pageParam = 0 }: { pageParam: number }) => {
     const offset = POKEMON_START_OFFSET + (PAGE_SIZE * pageParam);
-    const response = await request<GetAllPokemonResponse>('https://graphqlpokemon.favware.tech/v8', getAllPokemon, {
+    const response = await request<GetPokemonResponse>('https://graphqlpokemon.favware.tech/v8', getAllPokemon, {
       "offset": offset,
       "take": PAGE_SIZE,
       "reverse": false,
@@ -30,12 +31,16 @@ function PokemonList() {
       "takeFlavorTexts": PAGE_SIZE,
       "reverseFlavorTexts": false
     });
-    return { pokemon: response.getAllPokemon };
+
+    // store individual pokemon query values
+    response.pokemon.map(pokemon => queryClient.setQueryData(['getPokemon', pokemon.species], { pokemon } satisfies GetSinglePokemonResponse))
+
+    return response;
   };
 
   const fetchFuzzyPokemon = async ({ pageParam = 0 }: { pageParam: number }) => {
     const offset = PAGE_SIZE * pageParam;
-    const response = await request<GetFuzzyPokemonResponse>('https://graphqlpokemon.favware.tech/v8', getFuzzyPokemon, {
+    const response = await request<GetPokemonResponse>('https://graphqlpokemon.favware.tech/v8', getFuzzyPokemon, {
       "offset": offset,
       "take": PAGE_SIZE,
       "pokemon": searchQuery,
@@ -44,7 +49,11 @@ function PokemonList() {
       "takeFlavorTexts": PAGE_SIZE,
       "reverseFlavorTexts": false
     })
-    return { pokemon: response.getFuzzyPokemon };
+
+    // store individual pokemon query values
+    response.pokemon.map(pokemon => queryClient.setQueryData(['getPokemon', pokemon.species], { pokemon } satisfies GetSinglePokemonResponse))
+
+    return response;
   };
 
   const getAllQueryResponse = useInfiniteQuery({
