@@ -34,6 +34,7 @@ const queryClient = new QueryClient({
 
 const router = createRouter({
   routeTree,
+  basepath: '/pokedex/'
 })
 
 createRoot(document.getElementById('root')!).render(
