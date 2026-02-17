@@ -4,7 +4,7 @@ import './css/Pokemon.css'
 import { useState, useEffect, useRef, type MouseEventHandler } from "react";
 import { useRouter } from "@tanstack/react-router";
 
-function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: number }) {
+function pokemon({ pokemon, generation = 0 }: { pokemon: Pokemon, generation?: number }) {
     const {
         species,
         sprite, backSprite,
@@ -93,10 +93,13 @@ function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: nu
 
     const handleCardClick: MouseEventHandler<HTMLDivElement> = (event) => {
         event.stopPropagation()
-        router.navigate({
-            to: '/pokemon/$species',
-            params: { species },
-        });
+        console.log('testing', router.state.location.pathname)
+        if (router.state.location.pathname !== `/pokemon/${species}`) {
+            router.navigate({
+                to: '/pokemon/$species',
+                params: { species },
+            });
+        }
     }
 
     if (imageError) {
@@ -109,7 +112,7 @@ function pokemon({ pokemon, generation = 0}: { pokemon: Pokemon, generation?: nu
     return (
         <div
             ref={cardRef}
-            style={{'paddingTop': (96 * generation) + 'px'}}
+            style={{ 'paddingTop': (96 * generation) + 'px' }}
             className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''}`}
             onTransitionEnd={() => {
                 setIsAnimating(false);
