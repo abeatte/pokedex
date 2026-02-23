@@ -1,17 +1,39 @@
 import './css/Pokemon.css'
 import { useParams } from '@tanstack/react-router';
-import SinglePokemon from './SinglePokemon';
+import PokemonEvolutionStack from './PokemonEvolutionStack';
 import Footer from './Footer';
+import { Evolution, getPokemonEvolutions, type GetPokemonEvolutionsResponse } from './graphql/getPokemon';
+import request from 'graphql-request';
+import { useQuery } from '@tanstack/react-query';
 
 function SingleRoutedPokemon() {
     const { species } = useParams({ from: '/pokemon/$species' })
 
+    const fetchPokemonEvolutions = async () => {
+        return await request<GetPokemonEvolutionsResponse>('https://graphqlpokemon.favware.tech/v8', getPokemonEvolutions, {
+            'pokemon': species
+        });
+    };
+
+    const fetchPokemonEvolutionsResponse = useQuery({
+        queryKey: ['getPokemonEvolutions', species],
+        queryFn: fetchPokemonEvolutions,
+    })
+
+    const stack: Evolution[] = [];
+    let ev = fetchPokemonEvolutionsResponse?.data?.pokemon;
+    while (ev != undefined) {
+        stack.push(ev);
+        if ((ev.evolutions?.length ?? 0) > 1) {
+            console.warn('Pokemon has more than a single Evolution!!!')
+        }
+        ev = ev.evolutions?.[0];
+    }
+
     return (
         <>
             <div className="pokemon-list-container">
-                <div className="pokemon-single-grid">
-                    <SinglePokemon species={species} />
-                </div>
+                {!fetchPokemonEvolutionsResponse.isLoading && <PokemonEvolutionStack stack={stack} />}
             </div>
             <Footer />
         </>

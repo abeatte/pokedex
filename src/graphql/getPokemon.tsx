@@ -10,18 +10,36 @@ const Type = z.object({
   name: z.string(), // "Rock"
 });
 
-const Evolution = z.object({
+export interface Evolution {
+  key: string,
+  species: string,
+  evolutions?: Evolution[],
+}
+
+export const Evolution = z.object({
   key: z.string(),
   species: z.string(),
+  evolutions: z.lazy(() => EvolutionSchema.array()),
 });
+
+const EvolutionSchema: z.ZodType<Evolution> = Evolution;
 
 const FlavorText = z.object({
   flavor: z.string(), // "Some of its notable features match those of an object named within a certain expedition journal as Iron Thorns.",
   game: z.string(), // "Violet"
 });
 
-export const Pokemon = z.object({
+const PokemonBase = z.object({
   key: z.string(),
+  species: z.string(), // "Iron Thorns",
+});
+
+const PokemonEvolution = z.object({
+  evolutions: z.array(EvolutionSchema).optional(),
+  preevolutions: z.array(EvolutionSchema).optional(),
+});
+
+export const Pokemon = z.object({
   backSprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-back/ironthorns.png",
   // baseForme: null,
   // baseSpecies: null,
@@ -46,7 +64,6 @@ export const Pokemon = z.object({
     z.string() // Undiscovered
   ),
   // evolutionLevel: null,
-  evolutions: z.array(Evolution),
   evYields: {
     attack: z.number(), // 3,
     defense: z.number(), // 0,
@@ -69,107 +86,143 @@ export const Pokemon = z.object({
   minimumHatchTime: z.number(), // 12850,
   num: z.number(), // 995,
   // otherFormes: null,
-  preevolutions: z.array(Evolution),
   serebiiPage: z.url(), // "https://www.serebii.net/pokedex-sv/ironthorns",
   shinyBackSprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-back-shiny/ironthorns.png",
   shinySprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5-shiny/ironthorns.png",
   smogonPage: z.url(), // "https://www.smogon.com/dex/sv/pokemon/iron-thorns",
   smogonTier: z.string(), // "NUBL",
-  species: z.string(), // "Iron Thorns",
   sprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5/ironthorns.png",
   types: z.array(Type),
   weight: z.number(), // 303,
   mythical: z.boolean(), // false,
   legendary: z.boolean(), // false
-});
+}).and(PokemonBase).and(PokemonEvolution);
 
 export type Pokemon = z.infer<typeof Pokemon>;
+
+const PokemonBaseWithEvolutions = PokemonBase.and(PokemonEvolution);
+type PokemonEvolutions = z.infer<typeof PokemonBaseWithEvolutions>;
 
 export interface GetPokemonResponse {
   "pokemon": [
     Pokemon
   ]
-}
+};
 
 export interface GetSinglePokemonResponse {
   "pokemon": Pokemon
-}
+};
 
-const pokemon = `{
+export interface GetPokemonEvolutionsResponse {
+  "pokemon": PokemonEvolutions
+};
+
+const pokemonBase = `
     key
-    backSprite
-    baseForme
-    baseSpecies
-    baseStats {
-      attack
-      defense
-      hp
-      specialattack
-      specialdefense
-      speed
-    }
-    baseStatsTotal
-    bulbapediaPage
-    catchRate {
-      base
-      percentageWithOrdinaryPokeballAtFullHealth
-    }
-    classification
-    respelling
-    ipa
-    color
-    cosmeticFormes
-    cry
-    eggGroups
-    evolutionLevel
+    species
+`;
+
+const pokemonEvolutions = `
+  evolutions {
+    key
+    species
     evolutions {
       key
       species
+      evolutions {
+        key
+        species
+        evolutions {
+          key
+          species
+        }
+      }
     }
-    evYields {
-      attack
-      defense
-      hp
-      specialattack
-      specialdefense
-      speed
-    }
-    flavorTexts {
-      flavor
-      game
-    }
-    forme
-    formeLetter
-    gender {
-      female
-      male
-    }
-    height
-    isEggObtainable
-    levellingRate
-    maximumHatchTime
-    minimumHatchTime
-    num
-    otherFormes
+  }
+  preevolutions {
+    key
+    species
     preevolutions {
       key
       species
+      preevolutions {
+        key
+        species
+        preevolutions {
+          key
+          species
+        }
+      }
     }
-    serebiiPage
-    shinyBackSprite
-    shinySprite
-    smogonPage
-    smogonTier
-    species
-    sprite
-    types {
-      name
-    }
-    weight
-    mythical
-    legendary
   }
-}`;
+`;
+
+const pokemon = `
+  ${pokemonBase}
+  ${pokemonEvolutions}
+  backSprite
+  baseForme
+  baseSpecies
+  baseStats {
+    attack
+    defense
+    hp
+    specialattack
+    specialdefense
+    speed
+  }
+  baseStatsTotal
+  bulbapediaPage
+  catchRate {
+    base
+    percentageWithOrdinaryPokeballAtFullHealth
+  }
+  classification
+  respelling
+  ipa
+  color
+  cosmeticFormes
+  cry
+  eggGroups
+  evolutionLevel
+  evYields {
+    attack
+    defense
+    hp
+    specialattack
+    specialdefense
+    speed
+  }
+  flavorTexts {
+    flavor
+    game
+  }
+  forme
+  formeLetter
+  gender {
+    female
+    male
+  }
+  height
+  isEggObtainable
+  levellingRate
+  maximumHatchTime
+  minimumHatchTime
+  num
+  otherFormes
+  serebiiPage
+  shinyBackSprite
+  shinySprite
+  smogonPage
+  smogonTier
+  sprite
+  types {
+    name
+  }
+  weight
+  mythical
+  legendary
+`;
 
 export const getAllPokemon = gql`
 query (
@@ -187,8 +240,10 @@ query (
     offsetFlavorTexts: $offsetFlavorTexts
     takeFlavorTexts: $takeFlavorTexts
     reverseFlavorTexts: $reverseFlavorTexts
-  ) ${pokemon}
-`
+  ) {
+    ${pokemon}
+  }
+}`
 
 export const getFuzzyPokemon = gql`
 query (
@@ -208,8 +263,10 @@ query (
     offsetFlavorTexts: $offsetFlavorTexts
     takeFlavorTexts: $takeFlavorTexts
     reverseFlavorTexts: $reverseFlavorTexts
-  ) ${pokemon}
-`
+  ) {
+    ${pokemon}
+  }
+}`
 
 export const getSinglePokemon = gql`
 query GetPokemon(
@@ -217,5 +274,19 @@ query GetPokemon(
 ) {
   pokemon: getPokemon(
     pokemon: $pokemon
-  ) ${pokemon}
-`
+  ) {
+    ${pokemon}
+  }
+}`
+
+export const getPokemonEvolutions = gql`
+query GetPokemon(
+  $pokemon: PokemonEnum!
+) {
+  pokemon: getPokemon(
+    pokemon: $pokemon
+  ) {
+    ${pokemonBase}
+    ${pokemonEvolutions}
+  }
+}`

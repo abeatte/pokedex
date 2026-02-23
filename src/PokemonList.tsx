@@ -7,6 +7,7 @@ import { Fragment } from "react";
 import request from "graphql-request";
 import { useHeaderInfo } from "./HeaderInfoContext";
 import { keepPreviousData, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 
 const POKEMON_START_OFFSET = 93;
 const PAGE_SIZE = 10;
@@ -20,6 +21,7 @@ interface PokemonResponse {
 function PokemonList() {
   const { searchQuery } = useHeaderInfo();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const fetchAllPokemon = async ({ pageParam = 0 }: { pageParam: number }) => {
     const offset = POKEMON_START_OFFSET + (PAGE_SIZE * pageParam);
@@ -98,18 +100,27 @@ function PokemonList() {
 
   const queryResponse = searchQuery.length === 0 ? getAllQueryResponse : searchQueryResponse;
 
+  const handleOnCardClick = (pokemon: PokemonType) => {
+    if (router.state.location.pathname !== `/pokemon/${pokemon.species}`) {
+      router.navigate({
+        to: '/pokemon/$species',
+        params: { species: pokemon.species },
+      });
+    }
+  }
+
   const pokemen = queryResponse?.data?.pages.map((page: PokemonResponse, idx: number) => (
     <Fragment key={idx}>
       {page.pokemon?.map(pokemon => (
         <ErrorBoundary key={pokemon.key} >
-          <Pokemon pokemon={pokemon} />
+          <Pokemon pokemon={pokemon} onCardClick={handleOnCardClick} />
         </ErrorBoundary>
       ))}
     </Fragment>
   ));
 
   return (
-    <div className="pokemon-list-container">
+    <div className="pokemon-grid-container">
       <div className="pokemon-list-grid">
         {pokemen}
         <FetchNextPageSentinel key={'fetchNextPageSentinel'} fetchParams={queryResponse} />

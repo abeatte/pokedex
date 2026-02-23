@@ -1,5 +1,14 @@
-.pokemon-list-container {
+.pokemon-grid-container {
     flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.pokemon-list-container {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 20px;
     overflow-y: auto;
 }
@@ -7,14 +16,15 @@
 .pokemon-list-grid {
     margin: 0 auto;
     display: grid;
+    justify-content: center;
     /* Adjust 250px to your minimum column size before wrapping */
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 12px;
 }
 
 .pokemon-single-grid {
-    margin: 0 auto;
     display: flex;
+    flex-wrap: wrap;
     /* Adjust 250px to your minimum column size before wrapping */
     grid-template-columns: repeat(auto-fit, minmax(350px, 430px));
     gap: 12px;
@@ -34,7 +44,7 @@
         padding: 10px 20px;
         text-align: center;
         box-sizing: border-box;
-        background-color: rgba(226, 205, 68, 0.8);
+        background-color: rgba(226, 205, 68, 1.0);
         background-image:
             radial-gradient(circle at 10% 20%, rgba(248, 236, 242, 0.4) 0%, transparent 40%),
             radial-gradient(circle at 80% 10%, rgba(248, 236, 242, 0.4) 0%, transparent 30%),
@@ -115,7 +125,7 @@
     }
 
     .card_container.animating .card_flipper {
-        transform: rotateY(180deg);
+        transform: rotateY(-180deg);
     }
 
     .pokemon_image_container.animating .image_flipper .image.front {
@@ -127,7 +137,7 @@
     }
 
     .card_container.flipped .card_flipper {
-        transform: rotateY(180deg);
+        transform: rotateY(-180deg);
     }
 
     .card_container .card {
@@ -136,11 +146,11 @@
     }
 
     .card_container .card.front {
-        transform: rotateY(180deg);
+        transform: rotateY(-180deg);
     }
 
     .pokemon_image_container .image.back {
-        transform: rotateY(-180deg);
+        transform: rotateY(180deg);
     }
 
     .play_button {
@@ -152,6 +162,15 @@
 
     .pokemon_image_container .image_flipper .image.gone {
         display: none;
+    }
+}
+
+.pokemon-single-grid {
+    width: auto;
+
+    .card {
+        width: 430px;
+        position: absolute;
     }
 }
 

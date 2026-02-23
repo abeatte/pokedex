@@ -2,9 +2,8 @@ import { FaPlay } from "react-icons/fa";
 import type { Pokemon } from "./graphql/getPokemon";
 import './css/Pokemon.css'
 import { useState, useEffect, useRef, type MouseEventHandler } from "react";
-import { useRouter } from "@tanstack/react-router";
 
-function pokemon({ pokemon, generation = 0 }: { pokemon: Pokemon, generation?: number }) {
+function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pokemon, index?: number, zIndex?: number, onCardClick: (pokemon: Pokemon) => void }) {
     const {
         species,
         sprite, backSprite,
@@ -24,7 +23,6 @@ function pokemon({ pokemon, generation = 0 }: { pokemon: Pokemon, generation?: n
     const [isAnimating, setIsAnimating] = useState(false);
     const [isImageAnimating, setIsImageAnimating] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
 
     const hasBothSprites = sprite && backSprite;
     const hasShinySprites = shinySprite && shinyBackSprite;
@@ -93,13 +91,7 @@ function pokemon({ pokemon, generation = 0 }: { pokemon: Pokemon, generation?: n
 
     const handleCardClick: MouseEventHandler<HTMLDivElement> = (event) => {
         event.stopPropagation()
-        console.log('testing', router.state.location.pathname)
-        if (router.state.location.pathname !== `/pokemon/${species}`) {
-            router.navigate({
-                to: '/pokemon/$species',
-                params: { species },
-            });
-        }
+        onCardClick(pokemon);
     }
 
     if (imageError) {
@@ -112,7 +104,7 @@ function pokemon({ pokemon, generation = 0 }: { pokemon: Pokemon, generation?: n
     return (
         <div
             ref={cardRef}
-            style={{ 'paddingTop': (96 * generation) + 'px' }}
+            style={{ 'padding': `${96 * index}px 0 0 ${index > 0 ? 144 : 0}px` , 'zIndex': zIndex}}
             className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''}`}
             onTransitionEnd={() => {
                 setIsAnimating(false);
