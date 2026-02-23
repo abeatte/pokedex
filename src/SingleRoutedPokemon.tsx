@@ -21,7 +21,8 @@ function SingleRoutedPokemon() {
         queryFn: fetchPokemonEvolutions,
     })
 
-    const stack: Evolution[] = [];
+    let stack: Evolution[] = [];
+    let preevolutionsCount = 0;
     let ev = fetchPokemonEvolutionsResponse?.data?.pokemon;
     while (ev != undefined) {
         stack.push(ev);
@@ -31,10 +32,31 @@ function SingleRoutedPokemon() {
         ev = ev.evolutions?.[0];
     }
 
+    ev = fetchPokemonEvolutionsResponse?.data?.pokemon;
+    while (ev != undefined) {
+        if ((ev.preevolutions?.length ?? 0) > 1) {
+            console.warn('Pokemon has more than a single Pre-eolution!!!')
+        }
+        const preev = ev.preevolutions?.[0];
+        if (preev && !stack.includes(preev)) {
+            stack = [preev, ... stack];
+            preevolutionsCount++;
+        }
+        ev = preev;
+    }
+
+    const zIndexes = stack.map((_, idx, arr) => {
+        if (idx < preevolutionsCount) {
+            return idx;
+        }
+
+        return arr.length - 1 - idx + preevolutionsCount;
+    });
+    
     return (
         <>
             <div className="pokemon-list-container">
-                {!fetchPokemonEvolutionsResponse.isLoading && <PokemonEvolutionStack stack={stack} />}
+                {!fetchPokemonEvolutionsResponse.isLoading && <PokemonEvolutionStack stack={stack} zIndexes={zIndexes} />}
             </div>
             <Footer />
         </>

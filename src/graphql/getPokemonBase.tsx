@@ -13,15 +13,29 @@ export interface Evolution {
   key: string,
   species: string,
   evolutions?: Evolution[],
+  preevolutions?: Evolution[],
+}
+
+export interface Preevolution {
+  key: string,
+  species: string,
+  preevolutions?: Evolution[],
 }
 
 export const EvolutionObject = z.object({
   key: z.string(),
   species: z.string(),
-  evolutions: z.lazy(() => EvolutionSchema.array()),
+  evolutions: z.lazy(() => EvolutionSchema.array().optional()),
+});
+
+export const PreevolutionObject = z.object({
+  key: z.string(),
+  species: z.string(),
+  preevolutions: z.lazy(() => PreevolutionSchema.array().optional()),
 });
 
 const EvolutionSchema: z.ZodType<Evolution> = EvolutionObject;
+const PreevolutionSchema: z.ZodType<Preevolution> = PreevolutionObject;
 
 const FlavorTextObject = z.object({
   flavor: z.string(), // "Some of its notable features match those of an object named within a certain expedition journal as Iron Thorns.",
@@ -35,7 +49,7 @@ export const PokemonBaseObject = z.object({
 
 export const PokemonEvolutionObject = z.object({
   evolutions: z.array(EvolutionSchema).optional(),
-  preevolutions: z.array(EvolutionSchema).optional(),
+  preevolutions: z.array(PreevolutionSchema).optional(),
 });
 
 export const Pokemon = z.object({
