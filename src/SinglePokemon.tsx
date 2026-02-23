@@ -1,9 +1,10 @@
 import './css/Pokemon.css'
-import { getSinglePokemon, Pokemon as PokemonType, type GetSinglePokemonResponse } from "./graphql/getPokemon";
+import { Pokemon as PokemonType } from "./graphql/getPokemonBase";
 import request from "graphql-request";
 import { useQuery } from "@tanstack/react-query";
 import ErrorBoundary from './ErrorBoundary';
 import Pokemon from './Pokemon';
+import { getSinglePokemon, type GetSinglePokemonResponse } from './graphql/getSinglePokemon';
 
 function SinglePokemon({ species, index, zIndex, onCardClick }: { species: string, index: number, zIndex: number, onCardClick: (pokemon: PokemonType) => void }) {
 

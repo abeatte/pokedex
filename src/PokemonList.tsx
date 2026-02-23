@@ -1,4 +1,4 @@
-import { getAllPokemon, getFuzzyPokemon, type Pokemon as PokemonType, type GetPokemonResponse, type GetSinglePokemonResponse } from "./graphql/getPokemon";
+import { type Pokemon as PokemonType, type GetPokemonResponse } from "./graphql/getPokemonBase";
 import Pokemon from "./Pokemon";
 import './css/Pokemon.css'
 import FetchNextPageSentinel from "./FetchNextPageSentinel";
@@ -8,6 +8,9 @@ import request from "graphql-request";
 import { useHeaderInfo } from "./HeaderInfoContext";
 import { keepPreviousData, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
+import { getFuzzyPokemon } from "./graphql/getFuzzyPokemon";
+import { getAllPokemon } from "./graphql/getAllPokemon";
+import type { GetSinglePokemonResponse } from "./graphql/getSinglePokemon";
 
 const POKEMON_START_OFFSET = 93;
 const PAGE_SIZE = 10;

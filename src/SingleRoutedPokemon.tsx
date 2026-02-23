@@ -2,9 +2,10 @@ import './css/Pokemon.css'
 import { useParams } from '@tanstack/react-router';
 import PokemonEvolutionStack from './PokemonEvolutionStack';
 import Footer from './Footer';
-import { Evolution, getPokemonEvolutions, type GetPokemonEvolutionsResponse } from './graphql/getPokemon';
 import request from 'graphql-request';
 import { useQuery } from '@tanstack/react-query';
+import { getPokemonEvolutions, type GetPokemonEvolutionsResponse } from './graphql/getPokemonEvolutions';
+import type { Evolution } from './graphql/getPokemonBase';
 
 function SingleRoutedPokemon() {
     const { species } = useParams({ from: '/pokemon/$species' })

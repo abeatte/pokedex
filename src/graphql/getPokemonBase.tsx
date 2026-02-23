@@ -1,12 +1,11 @@
-import { gql } from "graphql-request";
 import z from "zod";
 
-const CatchRate = z.object({
+const CatchRateObject = z.object({
   base: z.number(), // 30,
   percentageWithOrdinaryPokeballAtFullHealth: z.string(), // "8.8%"
 });
 
-const Type = z.object({
+const TypeObject = z.object({
   name: z.string(), // "Rock"
 });
 
@@ -16,25 +15,25 @@ export interface Evolution {
   evolutions?: Evolution[],
 }
 
-export const Evolution = z.object({
+export const EvolutionObject = z.object({
   key: z.string(),
   species: z.string(),
   evolutions: z.lazy(() => EvolutionSchema.array()),
 });
 
-const EvolutionSchema: z.ZodType<Evolution> = Evolution;
+const EvolutionSchema: z.ZodType<Evolution> = EvolutionObject;
 
-const FlavorText = z.object({
+const FlavorTextObject = z.object({
   flavor: z.string(), // "Some of its notable features match those of an object named within a certain expedition journal as Iron Thorns.",
   game: z.string(), // "Violet"
 });
 
-const PokemonBase = z.object({
+export const PokemonBaseObject = z.object({
   key: z.string(),
   species: z.string(), // "Iron Thorns",
 });
 
-const PokemonEvolution = z.object({
+export const PokemonEvolutionObject = z.object({
   evolutions: z.array(EvolutionSchema).optional(),
   preevolutions: z.array(EvolutionSchema).optional(),
 });
@@ -53,7 +52,7 @@ export const Pokemon = z.object({
   },
   baseStatsTotal: z.number(), // 570,
   bulbapediaPage: z.url(), // "https://bulbapedia.bulbagarden.net/wiki/Iron Thorns_(Pokémon)",
-  catchRate: CatchRate,
+  catchRate: CatchRateObject,
   classification: z.string(), // "Paradox Pokémon",
   // respelling: null,
   // ipa: null,
@@ -72,7 +71,7 @@ export const Pokemon = z.object({
     specialdefense: z.number(), // 0,
     speed: z.number(), // 0
   },
-  flavorTexts: z.array(FlavorText),
+  flavorTexts: z.array(FlavorTextObject),
   // forme: null,
   // formeLetter: null,
   gender: {
@@ -92,16 +91,13 @@ export const Pokemon = z.object({
   smogonPage: z.url(), // "https://www.smogon.com/dex/sv/pokemon/iron-thorns",
   smogonTier: z.string(), // "NUBL",
   sprite: z.url(), // "https://play.pokemonshowdown.com/sprites/gen5/ironthorns.png",
-  types: z.array(Type),
+  types: z.array(TypeObject),
   weight: z.number(), // 303,
   mythical: z.boolean(), // false,
   legendary: z.boolean(), // false
-}).and(PokemonBase).and(PokemonEvolution);
+}).and(PokemonBaseObject).and(PokemonEvolutionObject);
 
 export type Pokemon = z.infer<typeof Pokemon>;
-
-const PokemonBaseWithEvolutions = PokemonBase.and(PokemonEvolution);
-type PokemonEvolutions = z.infer<typeof PokemonBaseWithEvolutions>;
 
 export interface GetPokemonResponse {
   "pokemon": [
@@ -109,20 +105,12 @@ export interface GetPokemonResponse {
   ]
 };
 
-export interface GetSinglePokemonResponse {
-  "pokemon": Pokemon
-};
-
-export interface GetPokemonEvolutionsResponse {
-  "pokemon": PokemonEvolutions
-};
-
-const pokemonBase = `
+export const pokemonBase = `
     key
     species
 `;
 
-const pokemonEvolutions = `
+export const pokemonEvolutions = `
   evolutions {
     key
     species
@@ -157,7 +145,7 @@ const pokemonEvolutions = `
   }
 `;
 
-const pokemon = `
+export const pokemon = `
   ${pokemonBase}
   ${pokemonEvolutions}
   backSprite
@@ -223,70 +211,3 @@ const pokemon = `
   mythical
   legendary
 `;
-
-export const getAllPokemon = gql`
-query (
-  $offset: Int
-  $take: Int
-  $reverse: Boolean
-  $offsetFlavorTexts: Int
-  $takeFlavorTexts: Int
-  $reverseFlavorTexts: Boolean
-) {
-  pokemon: getAllPokemon(
-    offset: $offset
-    take: $take
-    reverse: $reverse
-    offsetFlavorTexts: $offsetFlavorTexts
-    takeFlavorTexts: $takeFlavorTexts
-    reverseFlavorTexts: $reverseFlavorTexts
-  ) {
-    ${pokemon}
-  }
-}`
-
-export const getFuzzyPokemon = gql`
-query (
-  $offset: Int
-  $take: Int
-  $reverse: Boolean
-  $pokemon: String!
-  $offsetFlavorTexts: Int
-  $takeFlavorTexts: Int
-  $reverseFlavorTexts: Boolean
-) {
-  pokemon: getFuzzyPokemon(
-    offset: $offset
-    take: $take
-    pokemon: $pokemon
-    reverse: $reverse
-    offsetFlavorTexts: $offsetFlavorTexts
-    takeFlavorTexts: $takeFlavorTexts
-    reverseFlavorTexts: $reverseFlavorTexts
-  ) {
-    ${pokemon}
-  }
-}`
-
-export const getSinglePokemon = gql`
-query GetPokemon(
-  $pokemon: PokemonEnum!
-) {
-  pokemon: getPokemon(
-    pokemon: $pokemon
-  ) {
-    ${pokemon}
-  }
-}`
-
-export const getPokemonEvolutions = gql`
-query GetPokemon(
-  $pokemon: PokemonEnum!
-) {
-  pokemon: getPokemon(
-    pokemon: $pokemon
-  ) {
-    ${pokemonBase}
-    ${pokemonEvolutions}
-  }
-}`

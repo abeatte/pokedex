@@ -1,7 +1,7 @@
 import './css/Pokemon.css'
 import { useState, type ReactNode } from 'react';
 import SinglePokemon from './SinglePokemon';
-import type { Evolution } from './graphql/getPokemon';
+import type { Evolution } from './graphql/getPokemonBase';
 
 function PokemonEvolutionStack({ stack }: { stack: Array<Evolution> }) {
     const [zIndexes, setZIndexes] = useState(stack.map((_, idx, arr) => arr.length - idx - 1));
