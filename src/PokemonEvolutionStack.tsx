@@ -37,7 +37,7 @@ function PokemonEvolutionStack({ stack, zIndexes: initialZIndexes }: { stack: Ar
         ));
 
     return (
-        <div className="pokemon-single-grid">
+        <div className="pokemon-single-container">
             {cards}
         </div>
     );

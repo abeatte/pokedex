@@ -7,7 +7,6 @@
 .pokemon-list-container {
     display: flex;
     flex: 1;
-    flex-wrap: wrap;
     justify-content: center;
     padding: 20px;
     overflow-y: auto;
@@ -22,156 +21,166 @@
     gap: 12px;
 }
 
-.pokemon-single-grid {
+.pokemon-single-container {
     display: flex;
-    flex-wrap: wrap;
-    /* Adjust 250px to your minimum column size before wrapping */
-    grid-template-columns: repeat(auto-fit, minmax(350px, 430px));
+}
+
+.pokemon-single-container .card {
+    width: 430px;
+    position: absolute;
+}
+
+.card {
+    display: flex;
+    min-height: 325px;
+    flex-direction: column;
     gap: 12px;
+    color: black;
+    border-radius: 24px;
+    border: 4px solid gold;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 10px 20px;
+    text-align: center;
+    box-sizing: border-box;
+    background-color: rgba(226, 205, 68, 1.0);
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(248, 236, 242, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 80% 10%, rgba(248, 236, 242, 0.4) 0%, transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(248, 236, 242, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 30% 70%, rgba(248, 236, 242, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(248, 236, 242, 0.4) 0%, transparent 50%);
+    background-blend-mode: screen;
 }
 
-.pokemon-list-grid,
-.pokemon-single-grid {
-    .card {
-        display: flex;
-        min-height: 325px;
-        flex-direction: column;
-        gap: 12px;
-        color: black;
-        border-radius: 24px;
-        border: 4px solid gold;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        padding: 10px 20px;
-        text-align: center;
-        box-sizing: border-box;
-        background-color: rgba(226, 205, 68, 1.0);
-        background-image:
-            radial-gradient(circle at 10% 20%, rgba(248, 236, 242, 0.4) 0%, transparent 40%),
-            radial-gradient(circle at 80% 10%, rgba(248, 236, 242, 0.4) 0%, transparent 30%),
-            radial-gradient(circle at 50% 50%, rgba(248, 236, 242, 0.4) 0%, transparent 50%),
-            radial-gradient(circle at 30% 70%, rgba(248, 236, 242, 0.4) 0%, transparent 40%),
-            radial-gradient(circle at 90% 90%, rgba(248, 236, 242, 0.4) 0%, transparent 50%);
-        background-blend-mode: screen;
-    }
-
-    .card_container .card.back {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        transform: rotateY(0deg);
-    }
-
-    .pokemon_image_container .image.front {
-        position: absolute;
-        transform: rotateY(0deg);
-    }
-
-    .name {
-        font-weight: bold;
-        font-size: 2em;
-        padding: 0px 4px;
-        align-self: flex-start;
-    }
-
-    .image_window {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-    }
-
-    .card_container,
-    .pokemon_image_container {
-        position: relative;
-        transform-style: preserve-3d;
-        perspective: 1000px;
-    }
-
-    .pokemon_image_container {
-        display: flex;
-        height: 96px;
-        justify-content: center;
-        align-items: center;
-        background-color: beige;
-        border: 4px solid gold;
-        border-radius: 5px;
-    }
-
-    .card_flipper,
-    .image_flipper .image {
-        position: relative;
-        transform-style: preserve-3d;
-        transform: rotateY(0deg);
-        transition: transform 1s ease-in-out;
-    }
-
-    .image_flipper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-    }
-
-    .pokemon_image_container .image {
-        position: absolute;
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
-        height: auto;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        display: block;
-    }
-
-    .card_container.animating .card_flipper {
-        transform: rotateY(-180deg);
-    }
-
-    .pokemon_image_container.animating .image_flipper .image.front {
-        transform: rotateY(180deg);
-    }
-
-    .pokemon_image_container.animating .image_flipper .image.back {
-        transform: rotateY(0deg);
-    }
-
-    .card_container.flipped .card_flipper {
-        transform: rotateY(-180deg);
-    }
-
-    .card_container .card {
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-    }
-
-    .card_container .card.front {
-        transform: rotateY(-180deg);
-    }
-
-    .pokemon_image_container .image.back {
-        transform: rotateY(180deg);
-    }
-
-    .play_button {
-        margin: auto;
-        position: absolute;
-        align-self: flex-end;
-        margin: 8px;
-    }
-
-    .pokemon_image_container .image_flipper .image.gone {
-        display: none;
-    }
+.card_container .card.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: rotateY(0deg);
 }
 
-.pokemon-single-grid {
+.pokemon_image_container .image.front {
+    position: absolute;
+    transform: rotateY(0deg);
+}
+
+.name {
+    font-weight: bold;
+    font-size: 2em;
+    padding: 0px 4px;
+    align-self: flex-start;
+}
+
+.image_window {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.card_container,
+.pokemon_image_container {
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.pokemon-list-container .card_container {
+    left: -215px;
+}
+
+.card_container.animating.forward .card_flipper {
+    transform: rotateY(-180deg);
+    transform-origin: 215px;
+}
+
+.card_container.animating.backward .card_flipper {
+    transform: rotateY(180deg);
+    transform-origin: 215px;
+}
+
+.card_container.flipped.forward .card_flipper {
+    transform: rotateY(-180deg);
+    transform-origin: 215px;
+}
+
+.card_container.flipped.backward .card_flipper {
+    transform: rotateY(180deg);
+    transform-origin: 215px;
+}
+
+.card_container .card {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.card_container.forward .card.front {
+    transform: rotateY(-180deg);
+}
+
+.card_container.backward .card.front {
+    transform: rotateY(180deg);
+}
+
+
+.pokemon_image_container {
+    display: flex;
+    height: 96px;
+    justify-content: center;
+    align-items: center;
+    background-color: beige;
+    border: 4px solid gold;
+    border-radius: 5px;
+}
+
+.card_flipper,
+.image_flipper .image {
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    transition: transform 1s ease-in-out;
+}
+
+.image_flipper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.pokemon_image_container .image {
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
     width: auto;
+    height: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: block;
+}
 
-    .card {
-        width: 430px;
-        position: absolute;
-    }
+.pokemon_image_container.animating .image_flipper .image.front {
+    transform: rotateY(180deg);
+}
+
+.pokemon_image_container.animating .image_flipper .image.back {
+    transform: rotateY(0deg);
+}
+
+.pokemon_image_container .image.back {
+    transform: rotateY(180deg);
+}
+
+.play_button {
+    margin: auto;
+    position: absolute;
+    align-self: flex-end;
+    margin: 8px;
+}
+
+.pokemon_image_container .image_flipper .image.gone {
+    display: none;
 }
 
 @keyframes coinFlip {

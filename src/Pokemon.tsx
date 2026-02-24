@@ -20,6 +20,7 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
     const [displayIndex, setDisplayIndex] = useState(0);
     const [imageError, setImageError] = useState(false);
     const [hasFlipped, setHasFlipped] = useState(false);
+    const [isForward, setIsForward] = useState(true);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isImageAnimating, setIsImageAnimating] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
@@ -105,7 +106,7 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
         <div
             ref={cardRef}
             style={{ 'padding': `${96 * index}px 0 0 ${index > 0 ? 144 : 0}px` , 'zIndex': zIndex}}
-            className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''}`}
+            className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''} ${isForward ? 'forward' : 'backward'}`}
             onTransitionEnd={() => {
                 setIsAnimating(false);
                 setHasFlipped(true);
