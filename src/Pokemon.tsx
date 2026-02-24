@@ -20,7 +20,8 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
     const [displayIndex, setDisplayIndex] = useState(0);
     const [imageError, setImageError] = useState(false);
     const [hasFlipped, setHasFlipped] = useState(false);
-    const [isForward, setIsForward] = useState(true);
+    const [isForward, _setIsForward] = useState(true);
+    const [isGoingBack, setIsGoingBack] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isImageAnimating, setIsImageAnimating] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
@@ -92,7 +93,9 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
 
     const handleCardClick: MouseEventHandler<HTMLDivElement> = (event) => {
         event.stopPropagation()
-        onCardClick(pokemon);
+        setHasFlipped(false);
+        setIsAnimating(true);
+        setIsGoingBack(true);
     }
 
     if (imageError) {
@@ -105,11 +108,17 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
     return (
         <div
             ref={cardRef}
-            style={{ 'padding': `${96 * index}px 0 0 ${index > 0 ? 144 : 0}px` , 'zIndex': zIndex}}
-            className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''} ${isForward ? 'forward' : 'backward'}`}
+            style={{ 'padding': `${96 * index}px 0 0 ${index > 0 ? 144 : 0}px`, 'zIndex': zIndex}}
+            className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''} ${isForward ? 'forward' : 'backward'} ${isGoingBack ? 'going_back' : ''}`}
             onTransitionEnd={() => {
                 setIsAnimating(false);
                 setHasFlipped(true);
+            }}
+            onAnimationEnd={() => {
+                setIsAnimating(false);
+                setHasFlipped(true);
+                setIsGoingBack(false);
+                onCardClick(pokemon);
             }}
         >
             <div className="card_flipper">
