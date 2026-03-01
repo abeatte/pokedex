@@ -108,8 +108,8 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
     return (
         <div
             ref={cardRef}
-            style={{ 'padding': `${96 * index}px 0 0 ${index > 0 ? 144 : 0}px`, 'zIndex': zIndex}}
-            className={`card_container ${hasFlipped ? 'flipped' : ''} ${isAnimating ? 'animating' : ''} ${isForward ? 'forward' : 'backward'} ${isGoingBack ? 'going_back' : ''}`}
+            style={{ 'margin': `${96 * index}px 0 0 ${144 * index}px`, 'zIndex': zIndex }}
+            className={`card ${hasFlipped ? 'flipped' : ''} ${isAnimating && !isGoingBack ? 'animating' : ''} ${isForward ? 'forward' : 'backward'} ${isGoingBack ? 'going_back' : ''}`}
             onTransitionEnd={() => {
                 setIsAnimating(false);
                 setHasFlipped(true);
@@ -121,50 +121,48 @@ function pokemon({ pokemon, index = 0, zIndex = 0, onCardClick }: { pokemon: Pok
                 onCardClick(pokemon);
             }}
         >
-            <div className="card_flipper">
-                <div className="card back"></div>
-                <div className="card front" onClick={handleCardClick}>
-                    <div className="name">{species}</div>
-                    <div className="image_window" onClick={handleSpriteClick} >
-                        <span
-                            className={`pokemon_image_container ${isImageAnimating ? 'animating' : ''}`}>
-                            <div className="image_flipper" >
-                                {
-                                    [...Array(spriteCount).keys()].map((idx) => {
-                                        const nextDisplayIndex = (displayIndex + 1) % spriteCount;
-                                        return (
-                                            <img
-                                                key={`sprite-${idx}`}
-                                                className={`image ${displayIndex == idx ? 'front' : nextDisplayIndex == idx ? 'back' : 'gone'}`}
-                                                src={getSpriteSrcByIndex(idx)}
-                                                onError={handleError}
-                                                onTransitionEnd={_ => {
-                                                    if (displayIndex == idx && isImageAnimating) {
-                                                        setIsImageAnimating(false);
-                                                        setDisplayIndex(nextDisplayIndex);
-                                                    }
-                                                }}
-                                            />
-                                        );
-                                    })}
-                            </div>
-                        </span>
-                        {playCryButton}
-                    </div>
-                    <div className="stats">
-                        <div>Height: {height}m</div>
-                        <div>Weight: {weight}kg</div>
-                        <div>Number: {num}</div>
-                        <div>Types: {Array.from(types.map(type => type.name)).join(', ')}</div>
-                        {mythical || legendary && (<div>
-                            {mythical && (<span>Mythical: {mythical}</span>)}
-                            {legendary && (<span>Legendary: {legendary}</span>)}
-                        </div>)}
-                        <div>Catch Rate: {catchRate.base} | {catchRate.percentageWithOrdinaryPokeballAtFullHealth}</div>
-                        <div>Hatch Time: {minimumHatchTime} steps - {maximumHatchTime} steps</div>
-                    </div>
+            <div className="card_face front" onClick={handleCardClick}>
+                <div className="name">{species}</div>
+                <div className="image_window" onClick={handleSpriteClick} >
+                    <span
+                        className={`pokemon_image_container ${isImageAnimating ? 'animating' : ''}`}>
+                        <div className="image_flipper" >
+                            {
+                                [...Array(spriteCount).keys()].map((idx) => {
+                                    const nextDisplayIndex = (displayIndex + 1) % spriteCount;
+                                    return (
+                                        <img
+                                            key={`sprite-${idx}`}
+                                            className={`image ${displayIndex == idx ? 'front' : nextDisplayIndex == idx ? 'back' : 'gone'}`}
+                                            src={getSpriteSrcByIndex(idx)}
+                                            onError={handleError}
+                                            onTransitionEnd={_ => {
+                                                if (displayIndex == idx && isImageAnimating) {
+                                                    setIsImageAnimating(false);
+                                                    setDisplayIndex(nextDisplayIndex);
+                                                }
+                                            }}
+                                        />
+                                    );
+                                })}
+                        </div>
+                    </span>
+                    {playCryButton}
+                </div>
+                <div className="stats">
+                    <div>Height: {height}m</div>
+                    <div>Weight: {weight}kg</div>
+                    <div>Number: {num}</div>
+                    <div>Types: {Array.from(types.map(type => type.name)).join(', ')}</div>
+                    {mythical || legendary && (<div>
+                        {mythical && (<span>Mythical: {mythical}</span>)}
+                        {legendary && (<span>Legendary: {legendary}</span>)}
+                    </div>)}
+                    <div>Catch Rate: {catchRate.base} | {catchRate.percentageWithOrdinaryPokeballAtFullHealth}</div>
+                    <div>Hatch Time: {minimumHatchTime} steps - {maximumHatchTime} steps</div>
                 </div>
             </div>
+            <div className="card_face back"></div>
         </div>
     );
 }
